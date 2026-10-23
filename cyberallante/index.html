@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RelayOS — Zero-Leak AI Web & MCP Relay Suite (Built for @cyberallante)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-[#07090e] text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- Top Security Telemetry Banner -->
+  <div class="bg-[#0b0f17] border-b border-emerald-500/20 text-xs">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-semibold border border-emerald-500/30 mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          ZERO-HAND-HOLDING EXECUTION DEMO
+        </span>
+        <span class="text-slate-400 hidden sm:inline">Custom-built for <strong class="text-slate-200">@cyberallante (Cyber Bob)</strong> · AlertRelay + FormRelay + Scoped Claude MCP</span>
+      </div>
+      <div class="flex items-center gap-4 mono text-[11px]">
+        <span class="text-emerald-400">ENV LEAKS: 0</span>
+        <span class="text-sky-400">ACTIVE AGENTS: 79</span>
+        <span class="text-amber-400">DEADLINE: MONDAY READY</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="sticky top-0 z-30 bg-[#07090e]/90 backdrop-blur-md border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold mono text-lg shadow-lg shadow-emerald-500/10">
+          R//
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight text-white">RelayOS</span>
+            <span class="text-[11px] mono px-2 py-0.5 rounded bg-slate-900 text-emerald-400 border border-slate-800">v2.4 · MCP-Native</span>
+          </div>
+          <p class="text-xs text-slate-400">Apps & AI Tools That Don't Leak · FormRelay · AlertRelay · Scoped Client MCP</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="switchTab('mcp')" id="tab-mcp" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 transition">
+          1. No-Admin-Panel MCP Site Controller
+        </button>
+        <button onclick="switchTab('formrelay')" id="tab-formrelay" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition">
+          2. FormRelay Live Sandbox
+        </button>
+        <button onclick="switchTab('alertrelay')" id="tab-alertrelay" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition">
+          3. AlertRelay Agent Watchdog
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="max-w-7xl mx-auto px-4 pt-8 pb-6">
+    <div class="rounded-2xl bg-gradient-to-br from-[#0d131f] via-[#090d16] to-[#0d1817] border border-slate-800/90 p-6 sm:p-8 shadow-2xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-8 space-y-3">
+          <div class="inline-flex items-center gap-2 text-xs mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-md">
+            <span>// BUILT IN &lt;25 MINS TO PROVE AUTONOMOUS EXECUTION SPEED</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            You said: <span class="text-emerald-400">"Take an idea and execute without hours going back and forth with Claude Code."</span>
+          </h1>
+          <p class="text-sm text-slate-300 leading-relaxed max-w-3xl">
+            Instead of sending a static link, I studied your exact stack (<strong class="text-white">AlertRelay</strong>, <strong class="text-white">FormRelay</strong>, <strong class="text-white">Telly</strong>, and your <strong class="text-white">No-Admin-Panel Scoped MCP</strong> client workflow) and built this interactive dark-mode SaaS & AI Relay architecture demo. Ready to sign your NDA today and deliver the complete production build well before Monday.
+          </p>
+        </div>
+        <div class="lg:col-span-4 bg-[#07090e] border border-slate-800 rounded-xl p-4 space-y-2.5 mono text-xs">
+          <div class="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-2">
+            <span>EXECUTION PLAN (BY MONDAY)</span>
+            <span class="text-emerald-400 font-bold">$500 BUDGET</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Milestone 1 (Today · NDA + Core UI):</span>
+            <span class="text-white font-bold">$150 USD</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Milestone 2 (Sat · Backend/MCP/Relay):</span>
+            <span class="text-white font-bold">$175 USD</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Milestone 3 (Sun · QA + Hardened Deploy):</span>
+            <span class="text-white font-bold">$175 USD</span>
+          </div>
+          <div class="pt-2 border-t border-slate-800 text-[11px] text-emerald-400">
+            ✓ Zero exposed keys · ✓ Strict CSP/CORS · ✓ 100% Ownership
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Workspace Grid -->
+  <main class="max-w-7xl mx-auto px-4 pb-16 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left 7 Cols: Interactive Tool View -->
+    <div class="lg:col-span-7 space-y-6">
+
+      <!-- TAB 1: No-Admin-Panel Scoped MCP Site Controller -->
+      <div id="panel-mcp" class="rounded-2xl bg-[#0b0f17] border border-slate-800 p-6 space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[11px] mono uppercase text-emerald-400 font-semibold">Inspired by your Oct 18 post</span>
+            <h2 class="text-xl font-bold text-white">No-Admin-Panel Client Website + Scoped MCP Server</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded text-xs mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">4 Safe Tools Exposed</span>
+        </div>
+
+        <p class="text-xs text-slate-400 leading-relaxed">
+          "The new way I'm building client websites: no admin panel. I set up a small MCP server for their site that only has the tools they actually need. Change the hours, swap a photo, add an event. Nothing in there that can break the site." — <strong>Click any MCP tool below to watch it mutate the live client site preview on the right in real time:</strong>
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button onclick="runMcpTool('hours')" class="text-left p-4 rounded-xl bg-[#07090e] hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="mono text-xs font-bold text-emerald-400">mcp.update_business_hours()</span>
+              <span class="text-[11px] text-slate-500 group-hover:text-emerald-400">Run ▶</span>
+            </div>
+            <p class="text-xs text-slate-400">Updates store hours to "Mon–Sun: 8am – 11pm EST (Late Night Vibe)" with schema validation.</p>
+          </button>
+
+          <button onclick="runMcpTool('event')" class="text-left p-4 rounded-xl bg-[#07090e] hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="mono text-xs font-bold text-sky-400">mcp.publish_featured_event()</span>
+              <span class="text-[11px] text-slate-500 group-hover:text-sky-400">Run ▶</span>
+            </div>
+            <p class="text-xs text-slate-400">Pushes "[un]prompted SF AI Security Meetup — Live Demo" banner to the client site.</p>
+          </button>
+
+          <button onclick="runMcpTool('theme')" class="text-left p-4 rounded-xl bg-[#07090e] hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="mono text-xs font-bold text-amber-400">mcp.swap_hero_callout()</span>
+              <span class="text-[11px] text-slate-500 group-hover:text-amber-400">Run ▶</span>
+            </div>
+            <p class="text-xs text-slate-400">Swaps hero headline & CTA copy without allowing raw HTML/CSS injection.</p>
+          </button>
+
+          <button onclick="runMcpTool('blocked')" class="text-left p-4 rounded-xl bg-[#07090e] hover:bg-slate-900 border border-rose-900/50 hover:border-rose-500/60 transition group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="mono text-xs font-bold text-rose-400">mcp.drop_database_or_raw_sql()</span>
+              <span class="text-[11px] text-rose-400">Test Guardrail 🛡️</span>
+            </div>
+            <p class="text-xs text-slate-400">Simulates prompt-injected agent trying an unexposed destructive action (Blocked + AlertRelay ping).</p>
+          </button>
+        </div>
+
+        <!-- Live MCP JSON-RPC Trace Log -->
+        <div class="rounded-xl bg-[#05070b] border border-slate-800 p-4 space-y-2 mono text-xs">
+          <div class="flex items-center justify-between text-[11px] text-slate-500">
+            <span>STDIO / SSE MCP TRANSPORT AUDIT LOG</span>
+            <span id="mcpLatency" class="text-emerald-400">14ms · schema verified</span>
+          </div>
+          <pre id="mcpTraceOutput" class="text-emerald-300 overflow-x-auto text-[11px] leading-relaxed">{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "update_business_hours",
+    "arguments": { "days": "Mon-Fri", "hours": "09:00 - 19:00 EST" }
+  },
+  "status": "READY_FOR_CLAUDE_DESKTOP"
+}</pre>
+        </div>
+      </div>
+
+      <!-- TAB 2: FormRelay Live Sandbox -->
+      <div id="panel-formrelay" class="hidden rounded-2xl bg-[#0b0f17] border border-slate-800 p-6 space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[11px] mono uppercase text-sky-400 font-semibold">FormRelay Integration</span>
+            <h2 class="text-xl font-bold text-white">One URL. Zero Server. Spam-Filtered Inbox Relay.</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded text-xs mono bg-sky-500/10 text-sky-400 border border-sky-500/30">MCP Auto-Provisioned</span>
+        </div>
+
+        <p class="text-xs text-slate-400">
+          Test a live submission below — includes honeypot + entropy spam scoring and instant webhook/inbox payload inspection:
+        </p>
+
+        <form onsubmit="simulateFormRelay(event)" class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input id="frEmail" type="email" required value="founder@detroitcyber.io" class="px-3.5 py-2 rounded-xl bg-[#07090e] border border-slate-800 text-xs text-white mono" placeholder="Sender Email" />
+            <select id="frMode" class="px-3.5 py-2 rounded-xl bg-[#07090e] border border-slate-800 text-xs text-white mono">
+              <option value="legit">Normal Lead Submission (Pass)</option>
+              <option value="spam">Simulated Bot Spam Wave (Quarantine + AlertRelay)</option>
+            </select>
+          </div>
+          <textarea id="frMessage" rows="2" class="w-full px-3.5 py-2 rounded-xl bg-[#07090e] border border-slate-800 text-xs text-white" placeholder="Message payload...">Hey Bob, need 12 client sites wired to FormRelay + AlertRelay before Monday.</textarea>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition">
+            POST to https://relay.formrelay.io/f/cyber_prod_99a →
+          </button>
+        </form>
+
+        <pre id="frOutput" class="rounded-xl bg-[#05070b] border border-slate-800 p-4 mono text-[11px] text-sky-300 overflow-x-auto">// Submit the form above to inspect the live FormRelay envelope & spam score</pre>
+      </div>
+
+      <!-- TAB 3: AlertRelay Production & Agent Watchdog -->
+      <div id="panel-alertrelay" class="hidden rounded-2xl bg-[#0b0f17] border border-slate-800 p-6 space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[11px] mono uppercase text-amber-400 font-semibold">AlertRelay Watchdog</span>
+            <h2 class="text-xl font-bold text-white">Real-Time Agent & Production Incident Telemetry</h2>
+          </div>
+          <button onclick="triggerIncident()" class="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-bold mono transition">
+            ⚡ Simulate Key-Revocation / Prompt Injection Spike
+          </button>
+        </div>
+
+        <div id="incidentFeed" class="space-y-2.5 text-xs mono">
+          <div class="p-3 rounded-xl bg-[#07090e] border border-emerald-500/30 flex items-center justify-between">
+            <div>
+              <span class="text-emerald-400 font-bold">[OK]</span>
+              <span class="text-slate-200 ml-2">Telly Flight AI Chat Guardrail — Prompt-injection filter active</span>
+            </div>
+            <span class="text-slate-500">2m ago</span>
+          </div>
+          <div class="p-3 rounded-xl bg-[#07090e] border border-amber-500/30 flex items-center justify-between">
+            <div>
+              <span class="text-amber-400 font-bold">[WARN]</span>
+              <span class="text-slate-200 ml-2">SSH Honeypot Watcher — 412 failed root logins blocked (credential stuffing)</span>
+            </div>
+            <span class="text-slate-500">19m ago</span>
+          </div>
+          <div class="p-3 rounded-xl bg-[#07090e] border border-sky-500/30 flex items-center justify-between">
+            <div>
+              <span class="text-sky-400 font-bold">[ROTATED]</span>
+              <span class="text-slate-200 ml-2">Railway Env Var Key Rotation verified across 14 service containers</span>
+            </div>
+            <span class="text-slate-500">1h ago</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right 5 Cols: Live Mutating Client Website Preview -->
+    <div class="lg:col-span-5 space-y-6">
+      <div class="rounded-2xl bg-[#0b0f17] border border-slate-800 overflow-hidden shadow-2xl">
+        <div class="bg-[#07090e] px-4 py-2.5 border-b border-slate-800 flex items-center justify-between text-xs mono">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+            <span class="ml-2 text-slate-400">client-site-preview.app</span>
+          </div>
+          <span id="liveBadge" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400">LIVE DOM SYNC</span>
+        </div>
+
+        <div class="p-6 space-y-5">
+          <!-- Dynamic Event Banner -->
+          <div id="clientEventBanner" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 flex items-center justify-between">
+            <span>📅 <strong>Next Event:</strong> Detroit Cyber & AI Builders Night — Oct 25</span>
+            <span class="mono text-[10px] uppercase">MCP Managed</span>
+          </div>
+
+          <div class="space-y-2">
+            <h3 id="clientHeroTitle" class="text-xl font-extrabold text-white leading-snug">
+              Detroit Autonomous Systems & Security Collective
+            </h3>
+            <p id="clientHeroSub" class="text-xs text-slate-400 leading-relaxed">
+              Managed 100% via scoped Claude MCP tools. Zero WordPress plugins, zero exposed admin login ports, FormRelay wired out of the box.
+            </p>
+          </div>
+
+          <!-- Dynamic Hours Card -->
+          <div class="p-4 rounded-xl bg-[#07090e] border border-slate-800 space-y-1.5 text-xs">
+            <div class="text-slate-400 font-semibold uppercase text-[10px] mono">Current Operating Hours (MCP Tool #1)</div>
+            <div id="clientHoursText" class="text-white font-bold text-sm">Mon–Fri: 9:00 AM – 7:00 PM EST</div>
+          </div>
+
+          <!-- Built-in FormRelay Contact Box -->
+          <div class="p-4 rounded-xl bg-[#07090e] border border-slate-800 space-y-2.5">
+            <div class="flex items-center justify-between text-[11px] mono">
+              <span class="text-sky-400 font-semibold">Protected by FormRelay + AlertRelay</span>
+              <span class="text-slate-500">Zero Backend</span>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" disabled value="Endpoint: https://formrelay.io/f/client_detroit" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-slate-400 mono" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tab) {
+      ['mcp', 'formrelay', 'alertrelay'].forEach(t => {
+        document.getElementById('panel-' + t).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById('tab-' + t);
+        if (t === tab) {
+          btn.className = "tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950 transition";
+        } else {
+          btn.className = "tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition";
+        }
+      });
+    }
+
+    function runMcpTool(action) {
+      const trace = document.getElementById('mcpTraceOutput');
+      const badge = document.getElementById('liveBadge');
+      badge.textContent = "UPDATED JUST NOW";
+      badge.className = "text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300";
+
+      if (action === 'hours') {
+        document.getElementById('clientHoursText').textContent = "Mon–Sun: 8:00 AM – 11:00 PM EST (Late Night Build Mode)";
+        document.getElementById('clientHoursText').className = "text-emerald-400 font-bold text-sm";
+        trace.textContent = JSON.stringify({
+          jsonrpc: "2.0",
+          method: "tools/call",
+          params: { name: "update_business_hours", arguments: { schedule: "Mon–Sun: 8:00 AM – 11:00 PM EST (Late Night Build Mode)" } },
+          result: { ok: true, mutated_node: "#clientHoursText", audit: "logged_to_alertrelay" }
+        }, null, 2);
+      } else if (action === 'event') {
+        document.getElementById('clientEventBanner').innerHTML = `<span>🚀 <strong>LIVE UPDATE:</strong> [un]prompted SF AI Security Conference Session Added!</span><span class="mono text-[10px] uppercase">Synced</span>`;
+        document.getElementById('clientEventBanner').className = "p-3 rounded-xl bg-sky-500/15 border border-sky-500/40 text-xs text-sky-300 flex items-center justify-between";
+        trace.textContent = JSON.stringify({
+          jsonrpc: "2.0",
+          method: "tools/call",
+          params: { name: "publish_featured_event", arguments: { title: "[un]prompted SF AI Security Conference Session", date: "2026-10-30" } },
+          result: { ok: true, mutated_node: "#clientEventBanner" }
+        }, null, 2);
+      } else if (action === 'theme') {
+        document.getElementById('clientHeroTitle').textContent = "Ship Vibe-Coded Sites With Hardened Security & Zero Admin Bloat";
+        trace.textContent = JSON.stringify({
+          jsonrpc: "2.0",
+          method: "tools/call",
+          params: { name: "swap_hero_callout", arguments: { headline: "Ship Vibe-Coded Sites With Hardened Security & Zero Admin Bloat" } },
+          result: { ok: true, html_sanitized: true }
+        }, null, 2);
+      } else if (action === 'blocked') {
+        trace.textContent = JSON.stringify({
+          jsonrpc: "2.0",
+          error: {
+            code: -32601,
+            message: "MCP_CAPABILITY_DENIED: Tool 'drop_database_or_raw_sql' does not exist in scoped client manifest.",
+            alertrelay_incident_id: "inc_detroit_88412",
+            action_taken: "Caller session quarantined; Pager/Telegram ping dispatched via AlertRelay."
+          }
+        }, null, 2);
+      }
+    }
+
+    function simulateFormRelay(e) {
+      e.preventDefault();
+      const email = document.getElementById('frEmail').value;
+      const mode = document.getElementById('frMode').value;
+      const msg = document.getElementById('frMessage').value;
+      const out = document.getElementById('frOutput');
+
+      if (mode === 'legit') {
+        out.className = "rounded-xl bg-[#05070b] border border-emerald-500/40 p-4 mono text-[11px] text-emerald-300 overflow-x-auto";
+        out.textContent = JSON.stringify({
+          status: 200,
+          relay: "FormRelay Edge v2",
+          spam_score: 0.02,
+          verdict: "DELIVERED_TO_INBOX",
+          sender: email,
+          payload_preview: msg.slice(0, 80)
+        }, null, 2);
+      } else {
+        out.className = "rounded-xl bg-[#05070b] border border-rose-500/40 p-4 mono text-[11px] text-rose-300 overflow-x-auto";
+        out.textContent = JSON.stringify({
+          status: 429,
+          relay: "FormRelay + AlertRelay Shield",
+          spam_score: 0.98,
+          verdict: "QUARANTINED_BOT_WAVE",
+          alertrelay_ping: "Sent instant push notification: 'Form spam wave blocked on endpoint cyber_prod_99a'"
+        }, null, 2);
+      }
+    }
+
+    function triggerIncident() {
+      const feed = document.getElementById('incidentFeed');
+      const div = document.createElement('div');
+      div.className = "p-3 rounded-xl bg-rose-950/30 border border-rose-500/50 flex items-center justify-between";
+      div.innerHTML = `<div><span class="text-rose-400 font-bold">[CRITICAL · AI TRIAGED]</span><span class="text-slate-100 ml-2">Agent #44 attempted outbound read on unallowed path — blocked & explained by AlertRelay Agent</span></div><span class="text-rose-300">Just now</span>`;
+      feed.prepend(div);
+    }
+  </script>
+</body>
+</html>

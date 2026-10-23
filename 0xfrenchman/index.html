@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0xARENA — iOS Multiplayer Game + Web Hub Prototype (Built for @0xfrenchman)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', sans-serif; background: #07070c; color: #f8fafc; overflow-x: hidden; }
+    h1, h2, h3, .display-font { font-family: 'Space Grotesk', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass { background: rgba(17, 17, 28, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(139, 92, 246, 0.22); }
+    .iphone-frame {
+      width: 348px;
+      height: 716px;
+      border-radius: 52px;
+      background: #090910;
+      border: 10px solid #1e1e2e;
+      box-shadow: 0 0 0 2px #3b3b54, 0 30px 80px -15px rgba(139, 92, 246, 0.35);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.04); }
+    }
+    .aura { animation: pulseGlow 6s infinite ease-in-out; }
+  </style>
+</head>
+<body class="min-h-screen relative selection:bg-violet-500/30 selection:text-violet-200">
+  <!-- Ambient Background Glow -->
+  <div class="pointer-events-none fixed -top-32 left-1/4 w-96 h-96 rounded-full bg-violet-600/20 blur-[130px] aura"></div>
+  <div class="pointer-events-none fixed top-1/2 right-10 w-96 h-96 rounded-full bg-cyan-500/15 blur-[130px] aura"></div>
+
+  <!-- Live Activity Ticker -->
+  <div class="bg-violet-950/50 border-b border-violet-500/20 text-[11px] py-1.5 px-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="mono text-violet-200 font-medium" id="tickerText">LIVE PROTOTYPE FOR @0xFRENCHMAN: Interactive iOS App Store Multiplayer + Web Ecosystem</span>
+      </div>
+      <div class="flex items-center gap-3 mono text-slate-300">
+        <span>Netcode: <strong class="text-emerald-400">18ms UDP/WebRTC</strong></span>
+        <span>•</span>
+        <span>Chain: <strong id="activeChainBadge" class="text-cyan-400">Base L2</strong></span>
+        <span>•</span>
+        <span>Target: <strong class="text-white">iOS App Store + Web</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header & Concept / Chain / Language Controls -->
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#07070c]/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-600 to-cyan-500 flex items-center justify-center font-bold text-white shadow-lg shadow-violet-600/30 display-font text-lg">
+          0x
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-white tracking-tight display-font text-base">FRENCHMAN // ARENA</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30 mono">Concept Sandbox v1</span>
+          </div>
+          <p class="text-xs text-slate-400" id="headerSub">Tailored to your X replies: iOS Multiplayer Game + Web Hub ($5,000 Scope)</p>
+        </div>
+      </div>
+
+      <!-- Interactive Customizers -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Concept Switcher (Addresses "We haven't figured out the full concept yet") -->
+        <select id="conceptSelect" class="text-xs bg-slate-900 border border-violet-500/40 rounded-lg px-2.5 py-1.5 text-slate-100 font-medium">
+          <option value="brawler">Concept A: 1v1 / 4p Speed Arena PvP</option>
+          <option value="turf">Concept B: Tactical Turf Royale</option>
+          <option value="party">Concept C: Social Party Mini-Games</option>
+        </select>
+
+        <!-- Chain Switcher (Addresses "On which chain?") -->
+        <select id="chainSelect" class="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-cyan-300 mono">
+          <option value="Base L2">Chain: Base L2</option>
+          <option value="Solana">Chain: Solana</option>
+          <option value="Arbitrum">Chain: Arbitrum</option>
+          <option value="Abstract">Chain: Abstract</option>
+        </select>
+
+        <!-- View Switcher -->
+        <div class="hidden sm:flex bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-xs">
+          <button onclick="setLayout('split')" id="btnSplit" class="px-2.5 py-1 rounded-md bg-violet-600 text-white font-medium">Split View</button>
+          <button onclick="setLayout('web')" id="btnWeb" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white">Web Only</button>
+          <button onclick="setLayout('mobile')" id="btnMobile" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white">iOS Only</button>
+        </div>
+
+        <!-- EN / FR Toggle (Addresses "As tu un portfolio ?") -->
+        <button id="langToggle" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:border-violet-400 text-slate-200 mono">
+          🇬🇧 EN / 🇫🇷 FR
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="layoutGrid" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT COLUMN (7 Cols): Desktop Marketing Website & Concept Architecture -->
+      <div id="webColumn" class="lg:col-span-7 space-y-6">
+        <!-- Hero Card -->
+        <div class="glass rounded-2xl p-6 sm:p-8 space-y-5 relative overflow-hidden">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/15 border border-violet-500/30 text-violet-300 text-xs font-medium">
+            <span>🎮 iOS App Store Ready</span>
+            <span>•</span>
+            <span id="conceptTag">Real-Time Multiplayer PvP</span>
+          </div>
+
+          <h1 id="heroTitle" class="text-3xl sm:text-4xl font-bold text-white leading-tight display-font">
+            Fast-Paced 60s Multiplayer Battles. Native on iOS & Web.
+          </h1>
+
+          <p id="heroDesc" class="text-sm sm:text-base text-slate-300 leading-relaxed">
+            Built specifically from your thread context: you mentioned it’s a <strong class="text-white">multiplayer game for the iOS App Store + Website</strong> and that you’re still locking in the exact concept & chain. Use the live controls above and the interactive iPhone 16 Pro simulator on the right to test 3 turnkey game loops right now.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button onclick="triggerQuickMatch()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white font-semibold text-sm shadow-lg shadow-violet-600/30 transition">
+              ⚡ Simulate Live Match on iPhone →
+            </button>
+            <button onclick="switchPhoneTab('vault')" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-sm font-medium transition">
+              Inspect On-Chain Passkey Wallet
+            </button>
+          </div>
+
+          <!-- Live Stats Bar -->
+          <div class="grid grid-cols-3 gap-3 pt-4 border-t border-slate-800/80">
+            <div>
+              <div class="text-xs text-slate-400">Match Tickrate</div>
+              <div class="text-lg font-bold text-white mono">60 Hz / 18ms</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-400">iOS App Store Policy</div>
+              <div class="text-lg font-bold text-emerald-400 mono">100% Compliant</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-400">Full Build Budget</div>
+              <div class="text-lg font-bold text-cyan-400 mono">$5,000 Fixed</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Feature Bento Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="glass rounded-xl p-5 space-y-2">
+            <div class="text-xs text-violet-400 mono uppercase font-semibold">01 // iOS App Store First</div>
+            <h3 class="text-base font-bold text-white">React Native / Swift + WebGL Core</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Single authoritative multiplayer state engine running at 60fps on iOS (with Apple Sign-In & haptic feedback) and instant play-in-browser on desktop web.
+            </p>
+          </div>
+
+          <div class="glass rounded-xl p-5 space-y-2">
+            <div class="text-xs text-cyan-400 mono uppercase font-semibold">02 // Invisible Web3 Onboarding</div>
+            <h3 class="text-base font-bold text-white">FaceID Session Keys + Fiat/Token</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Passes Apple App Store review cleanly by abstracting wallet popups behind FaceID passkeys, gasless session keys, and optional web portal rewards.
+            </p>
+          </div>
+
+          <div class="glass rounded-xl p-5 space-y-2">
+            <div class="text-xs text-emerald-400 mono uppercase font-semibold">03 // Authoritative Matchmaking</div>
+            <h3 class="text-base font-bold text-white">Elo Lobbies + Private Room Codes</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              2-second quick-match queue, 4-digit friend party codes for X/Discord viral loops, and anti-cheat server validation.
+            </p>
+          </div>
+
+          <div class="glass rounded-xl p-5 space-y-2">
+            <div class="text-xs text-amber-400 mono uppercase font-semibold">04 // Concept Workshop Included</div>
+            <h3 class="text-base font-bold text-white">3 Playable Mechanics to Choose From</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Since you haven't finalized the full concept yet, Milestone 1 locks in your core gameplay loop, art direction, and interactive Web + iOS prototype in 24h.
+            </p>
+          </div>
+        </div>
+
+        <!-- De-Risked Milestone Roadmap for his $5,000 Budget -->
+        <div class="glass rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[11px] uppercase tracking-wider text-cyan-400 mono font-semibold">Zero-Risk Execution Plan</span>
+              <h2 class="text-lg font-bold text-white">How We Deliver Your Web + iOS Multiplayer Game Within $5,000</h2>
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 mono">Start for $150</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="p-4 rounded-xl bg-violet-950/30 border border-violet-500/40 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-violet-300 mono">PHASE 1 (24 Hours)</span>
+                <span class="px-2 py-0.5 rounded bg-violet-500/20 text-white font-bold mono">$150</span>
+              </div>
+              <div class="font-semibold text-white">Concept Lock + Live Web & iOS Clickable Prototype</div>
+              <p class="text-slate-300">Production landing page, interactive iOS UI kit, gameplay loop spec, and chain architecture finalized before you commit to the full build.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-cyan-300 mono">PHASE 2 (Week 1–2)</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-bold mono">$2,350</span>
+              </div>
+              <div class="font-semibold text-white">Playable Multiplayer Core + Web Portal</div>
+              <p class="text-slate-300">Real-time WebSocket matchmaking server, playable 1v1/4p arena loop, live leaderboard, and TestFlight iOS build.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-emerald-300 mono">PHASE 3 (Week 3–4)</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-bold mono">$2,500</span>
+              </div>
+              <div class="font-semibold text-white">On-Chain Integration + iOS App Store Launch</div>
+              <p class="text-slate-300">Passkey wallet / smart contract integration, App Store submission & approval support, and full source handoff.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN (5 Cols): Interactive iPhone 16 Pro Mobile App Simulator -->
+      <div id="mobileColumn" class="lg:col-span-5 flex flex-col items-center">
+        <div class="mb-3 flex items-center gap-2 text-xs text-slate-400 mono">
+          <span class="w-2 h-2 rounded-full bg-violet-400"></span>
+          <span>Interactive iPhone 16 Pro Simulator — Click Tabs & Buttons Below</span>
+        </div>
+
+        <div class="iphone-frame select-none">
+          <!-- iOS Status Bar & Dynamic Island -->
+          <div class="pt-3 px-6 pb-2 flex items-center justify-between text-[11px] text-slate-300 mono bg-[#0b0b14]">
+            <span>9:41</span>
+            <div class="px-3 py-1 rounded-full bg-black border border-slate-800 flex items-center gap-1.5 text-[10px]">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span id="islandPing" class="text-emerald-300">18ms • 60fps</span>
+            </div>
+            <span>5G 100%</span>
+          </div>
+
+          <!-- App Top Header inside iPhone -->
+          <div class="px-4 py-2.5 bg-[#0b0b14] border-b border-slate-800/80 flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-white display-font tracking-wide" id="phoneGameTitle">HEXARENA: SPEED PvP</div>
+              <div class="text-[10px] text-slate-400 mono">Season 01 • <span id="phoneChainLabel" class="text-cyan-400">Base L2</span></div>
+            </div>
+            <div class="px-2.5 py-1 rounded-lg bg-violet-500/15 border border-violet-500/30 text-violet-200 text-xs font-semibold mono" id="playerBalance">
+              1,450 CR
+            </div>
+          </div>
+
+          <!-- Dynamic Screen Content Area -->
+          <div id="phoneScreenContent" class="flex-1 overflow-y-auto p-4 space-y-3.5 bg-gradient-to-b from-[#0b0b14] to-[#101020]">
+            <!-- Populated dynamically via JS -->
+          </div>
+
+          <!-- Clickable iOS Bottom Tab Navigation -->
+          <div class="bg-[#090912]/95 border-t border-slate-800 px-3 pt-2 pb-5 grid grid-cols-4 gap-1 text-[10px]">
+            <button onclick="switchPhoneTab('arena')" id="tab-arena" class="flex flex-col items-center py-1 rounded-lg text-violet-400 font-semibold">
+              <span class="text-base">⚔️</span>
+              <span>Arena</span>
+            </button>
+            <button onclick="switchPhoneTab('feed')" id="tab-feed" class="flex flex-col items-center py-1 rounded-lg text-slate-400 hover:text-white">
+              <span class="text-base">📡</span>
+              <span>Live Feed</span>
+            </button>
+            <button onclick="switchPhoneTab('vault')" id="tab-vault" class="flex flex-col items-center py-1 rounded-lg text-slate-400 hover:text-white">
+              <span class="text-base">💎</span>
+              <span>Vault</span>
+            </button>
+            <button onclick="switchPhoneTab('ranks')" id="tab-ranks" class="flex flex-col items-center py-1 rounded-lg text-slate-400 hover:text-white">
+              <span class="text-base">🏆</span>
+              <span>Ranks</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const CONCEPTS = {
+      brawler: {
+        tag: "Concept A: 60-Second 1v1 / 4p Speed Arena PvP",
+        heroTitle: "Fast-Paced 60s Multiplayer Battles. Native on iOS & Web.",
+        phoneTitle: "HEXARENA // SPEED PvP",
+        arenaMode: "1v1 Blitz Duel (60s)",
+        stakeText: "250 CR Prize Pool"
+      },
+      turf: {
+        tag: "Concept B: Real-Time Hex Territory Conquest Royale",
+        heroTitle: "Capture the Grid in 8-Player Mobile Turf Wars.",
+        phoneTitle: "TURFZERO // CONQUEST",
+        arenaMode: "8-Player Hex Royale",
+        stakeText: "500 CR Clan Pot"
+      },
+      party: {
+        tag: "Concept C: Viral Social Party Knockout Mini-Games",
+        heroTitle: "Drop a 4-Digit Room Code. Battle Friends on iOS & Web.",
+        phoneTitle: "PARTYDROP // ROYALE",
+        arenaMode: "4-Player Party Knockout",
+        stakeText: "100 CR Entry Pass"
+      }
+    };
+
+    let state = {
+      concept: 'brawler',
+      chain: 'Base L2',
+      tab: 'arena',
+      lang: 'en',
+      credits: 1450,
+      elo: 1840,
+      wins: 14,
+      matchStatus: 'idle', // idle | searching |battling | won
+      recentMatches: [
+        { opponent: "0xKaito.eth", result: "WIN +120 CR", time: "2m ago", eloDelta: "+18" },
+        { opponent: "ParisSlayer", result: "WIN +120 CR", time: "11m ago", eloDelta: "+15" },
+        { opponent: "SolanaGhost", result: "LOSS -50 CR", time: "24m ago", eloDelta: "-9" }
+      ]
+    };
+
+    function renderPhoneScreen() {
+      const container = document.getElementById('phoneScreenContent');
+      const cfg = CONCEPTS[state.concept];
+      document.getElementById('phoneGameTitle').textContent = cfg.phoneTitle;
+      document.getElementById('phoneChainLabel').textContent = state.chain;
+      document.getElementById('activeChainBadge').textContent = state.chain;
+      document.getElementById('playerBalance').textContent = state.credits.toLocaleString() + ' CR';
+
+      ['arena', 'feed', 'vault', 'ranks'].forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        el.className = `flex flex-col items-center py-1 rounded-lg ${state.tab === t ? 'text-violet-400 font-semibold bg-violet-500/10' : 'text-slate-400 hover:text-white'}`;
+      });
+
+      if (state.tab === 'arena') {
+        let statusCard = '';
+        if (state.matchStatus === 'idle') {
+          statusCard = `
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-violet-900/50 to-slate-900 border border-violet-500/40 text-center space-y-3">
+              <div class="inline-block px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] mono">412 Players Queued</div>
+              <div class="text-base font-bold text-white display-font">${cfg.arenaMode}</div>
+              <div class="text-xs text-cyan-300 mono">${cfg.stakeText} • Zero Gas Session</div>
+              <button onclick="triggerQuickMatch()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-bold text-xs shadow-lg shadow-violet-600/40 active:scale-95 transition">
+                ⚡ FIND MATCH NOW
+              </button>
+            </div>
+          `;
+        } else if (state.matchStatus === 'searching') {
+          statusCard = `
+            <div class="p-5 rounded-2xl bg-slate-900 border border-cyan-500/50 text-center space-y-2">
+              <div class="text-xs text-cyan-300 mono animate-pulse">MATCHMAKING ON ${state.chain.toUpperCase()}...</div>
+              <div class="text-sm font-bold text-white">Pairing Elo ~${state.elo} Opponent</div>
+              <div class="text-[11px] text-slate-400 mono">Locking Escrowed Room State</div>
+            </div>
+          `;
+        } else if (state.matchStatus === 'battling') {
+          statusCard = `
+            <div class="p-4 rounded-2xl bg-indigo-950/70 border border-indigo-400/60 text-center space-y-2.5">
+              <div class="flex justify-between text-[10px] mono text-indigo-200">
+                <span>YOU (${state.elo})</span>
+                <span class="text-rose-400 font-bold">VS</span>
+                <span>0xVortex (1825)</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-400 to-cyan-400 h-full w-4/5 animate-pulse"></div>
+              </div>
+              <div class="text-xs font-bold text-white">⚡ Critical Combo Hit! Capturing Objective...</div>
+            </div>
+          `;
+        } else if (state.matchStatus === 'won') {
+          statusCard = `
+            <div class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-400/60 text-center space-y-2">
+              <div class="text-xs font-bold text-emerald-300 mono">🏆 VICTORY VERIFIED ON-CHAIN</div>
+              <div class="text-lg font-bold text-white">+125 CR & +16 ELO</div>
+              <button onclick="resetArena()" class="w-full py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold">Play Again</button>
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          ${statusCard}
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
+              <div class="text-[10px] text-slate-400">Your Rating</div>
+              <div class="text-sm font-bold text-white mono mt-0.5">${state.elo} ELO</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
+              <div class="text-[10px] text-slate-400">Win Streak</div>
+              <div class="text-sm font-bold text-emerald-400 mono mt-0.5">🔥 ${state.wins} Wins</div>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>Recent Verified Matches</span>
+              <span class="mono text-[10px] text-violet-300">iOS + Web Crossplay</span>
+            </div>
+            ${state.recentMatches.map(m => `
+              <div class="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800/90 flex items-center justify-between text-xs">
+                <div>
+                  <div class="font-medium text-white">${m.opponent}</div>
+                  <div class="text-[10px] text-slate-400">${m.time}</div>
+                </div>
+                <div class="text-right mono">
+                  <div class="${m.result.startsWith('WIN') ? 'text-emerald-400' : 'text-rose-400'} font-semibold text-[11px]">${m.result}</div>
+                  <div class="text-[10px] text-slate-400">${m.eloDelta} ELO</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (state.tab === 'feed') {
+        container.innerHTML = `
+          <div class="text-xs font-bold text-white uppercase tracking-wider mono">📡 Global Live Arena Feed</div>
+          <div class="space-y-2.5 text-xs">
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div class="flex justify-between text-[10px] mono text-cyan-400"><span>Lobby #8841 • ${state.chain}</span><span>Just now</span></div>
+              <div class="text-slate-200"><strong>@0xFrenchMan</strong> won a 4-Player Blitz Pot (<span class="text-emerald-400">+500 CR</span>)</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div class="flex justify-between text-[10px] mono text-violet-400"><span>Tournament #12</span><span>3m ago</span></div>
+              <div class="text-slate-200">Weekend iOS Cup registration reached <strong>128/128 players</strong>.</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div class="flex justify-between text-[10px] mono text-emerald-400"><span>Party Code: FR77</span><span>5m ago</span></div>
+              <div class="text-slate-200">Private 2v2 room created on iOS App v1.0.</div>
+            </div>
+          </div>
+        `;
+      } else if (state.tab === 'vault') {
+        container.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/60 to-violet-950/60 border border-cyan-500/40 space-y-2">
+            <div class="flex justify-between items-center text-[10px] mono text-cyan-300">
+              <span>APPLE PASSKEY WALLET</span>
+              <span>${state.chain}</span>
+            </div>
+            <div class="text-xl font-bold text-white mono">${state.credits.toLocaleString()} CR <span class="text-xs text-slate-300 font-normal">($145.00)</span></div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button onclick="addDemoCredits()" class="py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 text-[11px] font-semibold">+ Apple Pay Top-Up</button>
+              <button class="py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 text-[11px]">Instant Withdraw</button>
+            </div>
+          </div>
+          <div class="text-[11px] font-semibold text-slate-300 pt-1">Equipped Loadout Skins</div>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-slate-900 border border-violet-500/40">
+              <div class="text-base">⚡</div>
+              <div class="font-semibold text-white mt-1">Neon Vanguard</div>
+              <div class="text-[10px] text-emerald-400 mono">Equipped</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+              <div class="text-base">🛡️</div>
+              <div class="font-semibold text-white mt-1">Genesis Shield</div>
+              <div class="text-[10px] text-violet-300 mono">Season 1 Pass</div>
+            </div>
+          </div>
+        `;
+      } else if (state.tab === 'ranks') {
+        container.innerHTML = `
+          <div class="text-xs font-bold text-white uppercase tracking-wider mono">🏆 Season 01 Top Players</div>
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-violet-500/15 border border-violet-500/40 flex justify-between items-center">
+              <div><span class="font-bold text-amber-300 mr-1.5">#1</span><span class="text-white font-semibold">0xFrenchMan (You)</span></div>
+              <span class="mono text-emerald-400 font-bold">${state.elo} ELO</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center">
+              <div><span class="font-bold text-slate-400 mr-1.5">#2</span><span class="text-slate-200">Kaito.base</span></div>
+              <span class="mono text-slate-300">1,815 ELO</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center">
+              <div><span class="font-bold text-slate-400 mr-1.5">#3</span><span class="text-slate-200">AzukiRunner</span></div>
+              <span class="mono text-slate-300">1,790 ELO</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function switchPhoneTab(tabName) {
+      state.tab = tabName;
+      renderPhoneScreen();
+    }
+
+    function triggerQuickMatch() {
+      state.tab = 'arena';
+      state.matchStatus = 'searching';
+      renderPhoneScreen();
+      setTimeout(() => {
+        state.matchStatus = 'battling';
+        renderPhoneScreen();
+      }, 900);
+      setTimeout(() => {
+        state.matchStatus = 'won';
+        state.credits += 125;
+        state.elo += 16;
+        state.wins += 1;
+        state.recentMatches.unshift({
+          opponent: "0xVortex",
+          result: "WIN +125 CR",
+          time: "Just now",
+          eloDelta: "+16"
+        });
+        renderPhoneScreen();
+      }, 2200);
+    }
+
+    function resetArena() {
+      state.matchStatus = 'idle';
+      renderPhoneScreen();
+    }
+
+    function addDemoCredits() {
+      state.credits += 250;
+      renderPhoneScreen();
+    }
+
+    function setLayout(mode) {
+      const webCol = document.getElementById('webColumn');
+      const mobCol = document.getElementById('mobileColumn');
+      document.getElementById('btnSplit').className = mode === 'split' ? 'px-2.5 py-1 rounded-md bg-violet-600 text-white font-medium' : 'px-2.5 py-1 rounded-md text-slate-400 hover:text-white';
+      document.getElementById('btnWeb').className = mode === 'web' ? 'px-2.5 py-1 rounded-md bg-violet-600 text-white font-medium' : 'px-2.5 py-1 rounded-md text-slate-400 hover:text-white';
+      document.getElementById('btnMobile').className = mode === 'mobile' ? 'px-2.5 py-1 rounded-md bg-violet-600 text-white font-medium' : 'px-2.5 py-1 rounded-md text-slate-400 hover:text-white';
+
+      if (mode === 'split') {
+        webCol.className = 'lg:col-span-7 space-y-6 block';
+        mobCol.className = 'lg:col-span-5 flex flex-col items-center';
+      } else if (mode === 'web') {
+        webCol.className = 'lg:col-span-12 space-y-6 block';
+        mobCol.className = 'hidden';
+      } else {
+        webCol.className = 'hidden';
+        mobCol.className = 'lg:col-span-12 flex flex-col items-center';
+      }
+    }
+
+    document.getElementById('conceptSelect').addEventListener('change', (e) => {
+      state.concept = e.target.value;
+      const cfg = CONCEPTS[state.concept];
+      document.getElementById('conceptTag').textContent = cfg.tag;
+      document.getElementById('heroTitle').textContent = cfg.heroTitle;
+      renderPhoneScreen();
+    });
+
+    document.getElementById('chainSelect').addEventListener('change', (e) => {
+      state.chain = e.target.value;
+      renderPhoneScreen();
+    });
+
+    document.getElementById('langToggle').addEventListener('click', () => {
+      state.lang = state.lang === 'en' ? 'fr' : 'en';
+      if (state.lang === 'fr') {
+        document.getElementById('heroTitle').textContent = "Combats Multijoueurs 60s sur iOS App Store & Web.";
+        document.getElementById('headerSub').textContent = "Conçu sur mesure pour @0xfrenchman : Jeu Multijoueur iOS + Site Web (Budget $5,000)";
+      } else {
+        document.getElementById('heroTitle').textContent = CONCEPTS[state.concept].heroTitle;
+        document.getElementById('headerSub').textContent = "Tailored to your X replies: iOS Multiplayer Game + Web Hub ($5,000 Scope)";
+      }
+    });
+
+    renderPhoneScreen();
+  </script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+{
+  "AuditSuite": "AegisGov \u2014 Web Automation & AI Security Telemetry Inspector",
+  "Version": "1.0.0",
+  "GeneratedAtUTC": "2026-10-23T14:30:31Z",
+  "GeneratedAtBuenosAires": "2026-10-23 11:30:31 (UTC-3)",
+  "Mode": "Passive Read-Only DOM, Network Egress & Security Header Governance Audit",
+  "TwoCoreAISecurityProblemsAddressed": [
+    {
+      "ProblemID": "AI-SEC-01",
+      "Title": "Indirect Prompt Injection via Untrusted DOM / Hidden Accessibility-Tree Payloads in Browser Agents",
+      "TechnicalGap": "Browser-use and computer-use agents ingest raw DOM text, aria-labels, and hidden CSS subtrees without provenance tagging. A third-party comment or invisible span can hijack the agent's planner into exfiltrating session state over an unguarded fetch/navigation call.",
+      "EnforcementFix": "Pre-execution DOM Provenance Sanitizer + Strict Content-Security-Policy (connect-src) allowlisting & browser-context egress interception before agent action execution."
+    },
+    {
+      "ProblemID": "AI-SEC-02",
+      "Title": "Shadow AI Egress & Unscoped Tool-Call Credential Leakage in Client/Edge Apps",
+      "TechnicalGap": "Frontend and Node.js BFF layers routinely bundle third-party AI/telemetry SDKs or forward user bearer tokens / session cookies into downstream MCP/tool calls without per-tool audience scoping or redact-on-egress policies.",
+      "EnforcementFix": "Automated Headless Telemetry & Script-SRI Auditing + Ephemeral Scoped Capability Tokens with deterministic PII/Secret Redaction Proxy."
+    }
+  ],
+  "EndpointAudits": [
+    {
+      "target_url": "https://news.ycombinator.com",
+      "final_url": "https://news.ycombinator.com",
+      "http_status": 200,
+      "elapsed_ms": 280.1,
+      "audited_at_utc": "2026-10-23T14:30:31Z",
+      "governance_score": 62,
+      "summary_metrics": {
+        "total_scripts": 1,
+        "external_scripts": 1,
+        "inline_scripts": 0,
+        "external_scripts_missing_sri": 1,
+        "third_party_domains_count": 24,
+        "input_surfaces_count": 2,
+        "unbounded_input_surfaces": 1,
+        "shadow_ai_or_telemetry_sdks": 0,
+        "guardrails_passed": 5,
+        "guardrails_total": 8
+      },
+      "shadow_ai_and_telemetry_detections": [],
+      "third_party_domains_sample": [
+        "arstechnica.com",
+        "arxiv.org",
+        "blog.jim-nielsen.com",
+        "codeandcake.dev",
+        "codeberg.org",
+        "developer.chrome.com",
+        "drew.silcock.dev",
+        "edjefferson.com",
+        "github.com",
+        "keepandroidopen.org",
+        "quad9.net",
+        "simedw.com",
+        "tilschuenemann.de",
+        "twitter.com",
+        "www.awakin.org",
+        "www.bitdefender.com",
+        "www.cs.utexas.edu",
+        "www.kadoa.com",
+        "www.lesswrong.com",
+        "www.modelcompare.ai",
+        "www.sverigesradio.se",
+        "www.taler.net",
+        "www.tvfandomlounge.com",
+        "www.ycombinator.com"
+      ],
+      "script_inventory": [
+        {
+          "type": "external",
+          "src": "https://news.ycombinator.com/hn.js?xRLUGZw7cmuze0dugP4m",
+          "has_sri_integrity": false,
+          "sri_value": null,
+          "inline_sha256": null,
+          "inline_length_bytes": 0,
+          "runtime_signals": []
+        }
+      ],
+      "input_surface_inventory": [
+        {
+          "element": "form",
+          "type": "form",
+          "name_or_id": "anonymous",
+          "action": "https://hn.algolia.com/",
+          "method": "GET",
+          "has_maxlength": false,
+          "maxlength": null,
+          "autocomplete": "unspecified",
+          "placeholder": ""
+        },
+        {
+          "element": "input",
+          "type": "text",
+          "name_or_id": "q",
+          "action": null,
+          "method": null,
+          "has_maxlength": false,
+          "maxlength": null,
+          "autocomplete": "off",
+          "placeholder": ""
+        }
+      ],
+      "headers_and_cookies": {
+        "headers_present": {
+          "content_security_policy": true,
+          "access_control_allow_origin": null,
+          "strict_transport_security": true,
+          "x_frame_options": "DENY",
+          "x_content_type_options": "nosniff",
+          "referrer_policy": "origin",
+          "permissions_policy": false
+        },
+        "cookie_audits": [],
+        "guardrail_checks": [
+          {
+            "rule_id": "GOV-HDR-001",
+            "control": "Content-Security-Policy (Outbound Connect/Script Guardrail)",
+            "status": "PASS",
+            "detail": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://cdnjs.clo"
+          },
+          {
+            "rule_id": "GOV-HDR-002",
+            "control": "CORS Origin Isolation (Access-Control-Allow-Origin)",
+            "status": "PASS",
+            "detail": "No permissive wildcard CORS header exposed."
+          },
+          {
+            "rule_id": "GOV-HDR-003",
+            "control": "Strict-Transport-Security (TLS Enforcement)",
+            "status": "PASS",
+            "detail": "max-age=31556900"
+          },
+          {
+            "rule_id": "GOV-HDR-004",
+            "control": "Frame & Clickjacking Guardrail (X-Frame-Options / frame-ancestors)",
+            "status": "PASS",
+            "detail": "DENY"
+          },
+          {
+            "rule_id": "GOV-HDR-005",
+            "control": "Browser Feature & Sensor Lockdown (Permissions-Policy)",
+            "status": "WARN",
+            "detail": "Missing Permissions-Policy (microphone/camera/geolocation not explicitly restricted)."
+          },
+          {
+            "rule_id": "GOV-DOM-006",
+            "control": "Subresource Integrity (SRI) on External Scripts",
+            "status": "WARN",
+            "detail": "1 external script(s) loaded without SHA-256/384 SRI integrity attribute."
+          },
+          {
+            "rule_id": "GOV-PROMPT-007",
+            "control": "Input / Prompt Surface Token-Length & Boundary Controls",
+            "status": "WARN",
+            "detail": "1 user input surface(s) lack explicit DOM maxlength boundary controls."
+          },
+          {
+            "rule_id": "GOV-AI-008",
+            "control": "Shadow AI & Unsanctioned Client-Side Telemetry SDK Detection",
+            "status": "PASS",
+            "detail": "Zero direct client-side LLM/Shadow-AI SDK endpoints exposed in DOM."
+          }
+        ]
+      }
+    },
+    {
+      "target_url": "https://example.com",
+      "final_url": "https://example.com",
+      "http_status": 200,
+      "elapsed_ms": 71.6,
+      "audited_at_utc": "2026-10-23T14:30:31Z",
+      "governance_score": 38,
+      "summary_metrics": {
+        "total_scripts": 1,
+        "external_scripts": 1,
+        "inline_scripts": 0,
+        "external_scripts_missing_sri": 1,
+        "third_party_domains_count": 0,
+        "input_surfaces_count": 0,
+        "unbounded_input_surfaces": 0,
+        "shadow_ai_or_telemetry_sdks": 0,
+        "guardrails_passed": 3,
+        "guardrails_total": 8
+      },
+      "shadow_ai_and_telemetry_detections": [],
+      "third_party_domains_sample": [],
+      "script_inventory": [
+        {
+          "type": "external",
+          "src": "https://example.com/s.js",
+          "has_sri_integrity": false,
+          "sri_value": null,
+          "inline_sha256": null,
+          "inline_length_bytes": 0,
+          "runtime_signals": []
+        }
+      ],
+      "input_surface_inventory": [],
+      "headers_and_cookies": {
+        "headers_present": {
+          "content_security_policy": false,
+          "access_control_allow_origin": null,
+          "strict_transport_security": false,
+          "x_frame_options": null,
+          "x_content_type_options": null,
+          "referrer_policy": null,
+          "permissions_policy": false
+        },
+        "cookie_audits": [],
+        "guardrail_checks": [
+          {
+            "rule_id": "GOV-HDR-001",
+            "control": "Content-Security-Policy (Outbound Connect/Script Guardrail)",
+            "status": "FAIL",
+            "detail": "Missing Content-Security-Policy header; unguarded outbound fetch/LLM API egress possible."
+          },
+          {
+            "rule_id": "GOV-HDR-002",
+            "control": "CORS Origin Isolation (Access-Control-Allow-Origin)",
+            "status": "PASS",
+            "detail": "No permissive wildcard CORS header exposed."
+          },
+          {
+            "rule_id": "GOV-HDR-003",
+            "control": "Strict-Transport-Security (TLS Enforcement)",
+            "status": "WARN",
+            "detail": "Missing HSTS header on endpoint."
+          },
+          {
+            "rule_id": "GOV-HDR-004",
+            "control": "Frame & Clickjacking Guardrail (X-Frame-Options / frame-ancestors)",
+            "status": "WARN",
+            "detail": "No explicit X-Frame-Options or CSP frame-ancestors policy."
+          },
+          {
+            "rule_id": "GOV-HDR-005",
+            "control": "Browser Feature & Sensor Lockdown (Permissions-Policy)",
+            "status": "WARN",
+            "detail": "Missing Permissions-Policy (microphone/camera/geolocation not explicitly restricted)."
+          },
+          {
+            "rule_id": "GOV-DOM-006",
+            "control": "Subresource Integrity (SRI) on External Scripts",
+            "status": "WARN",
+            "detail": "1 external script(s) loaded without SHA-256/384 SRI integrity attribute."
+          },
+          {
+            "rule_id": "GOV-PROMPT-007",
+            "control": "Input / Prompt Surface Token-Length & Boundary Controls",
+            "status": "PASS",
+            "detail": "0 user input surface(s) lack explicit DOM maxlength boundary controls."
+          },
+          {
+            "rule_id": "GOV-AI-008",
+            "control": "Shadow AI & Unsanctioned Client-Side Telemetry SDK Detection",
+            "status": "PASS",
+            "detail": "Zero direct client-side LLM/Shadow-AI SDK endpoints exposed in DOM."
+          }
+        ]
+      }
+    },
+    {
+      "target_url": "https://www.yashpanpaliya.dev",
+      "final_url": "https://www.yashpanpaliya.dev",
+      "http_status": 200,
+      "elapsed_ms": 217.2,
+      "audited_at_utc": "2026-10-23T14:30:31Z",
+      "governance_score": 25,
+      "summary_metrics": {
+        "total_scripts": 4,
+        "external_scripts": 2,
+        "inline_scripts": 2,
+        "external_scripts_missing_sri": 2,
+        "third_party_domains_count": 5,
+        "input_surfaces_count": 0,
+        "unbounded_input_surfaces": 0,
+        "shadow_ai_or_telemetry_sdks": 1,
+        "guardrails_passed": 2,
+        "guardrails_total": 8
+      },
+      "shadow_ai_and_telemetry_detections": [
+        {
+          "provider_or_sdk": "google_analytics_gtm",
+          "matched_endpoints": [
+            "googletagmanager.com"
+          ],
+          "risk_classification": "TELEMETRY_EGRESS"
+        }
+      ],
+      "third_party_domains_sample": [
+        "github.com",
+        "www.fiverr.com",
+        "www.googletagmanager.com",
+        "www.linkedin.com",
+        "x.com"
+      ],
+      "script_inventory": [
+        {
+          "type": "inline",
+          "src": null,
+          "has_sri_integrity": false,
+          "sri_value": null,
+          "inline_sha256": "sha256-810d1b8a54605301178e2405...",
+          "inline_length_bytes": 1198,
+          "runtime_signals": []
+        },
+        {
+          "type": "external",
+          "src": "https://www.googletagmanager.com/gtag/js?id=G-HFXEGVCDJ2",
+          "has_sri_integrity": false,
+          "sri_value": null,
+          "inline_sha256": null,
+          "inline_length_bytes": 0,
+          "runtime_signals": []
+        },
+        {
+          "type": "inline",
+          "src": null,
+          "has_sri_integrity": false,
+          "sri_value": null,
+          "inline_sha256": "sha256-4a3cfb20b585a220e7a98b8f...",
+          "inline_length_bytes": 161,
+          "runtime_signals": []
+        },
+        {
+          "type": "external",
+          "src": "https://www.yashpanpaliya.dev/assets/index-BYq0IQDF.js",
+          "has_sri_integrity": false,
+          "sri_value": null,
+          "inline_sha256": null,
+          "inline_length_bytes": 0,
+          "runtime_signals": []
+        }
+      ],
+      "input_surface_inventory": [],
+      "headers_and_cookies": {
+        "headers_present": {
+          "content_security_policy": false,
+          "access_control_allow_origin": "*",
+          "strict_transport_security": true,
+          "x_frame_options": null,
+          "x_content_type_options": null,
+          "referrer_policy": null,
+          "permissions_policy": false
+        },
+        "cookie_audits": [],
+        "guardrail_checks": [
+          {
+            "rule_id": "GOV-HDR-001",
+            "control": "Content-Security-Policy (Outbound Connect/Script Guardrail)",
+            "status": "FAIL",
+            "detail": "Missing Content-Security-Policy header; unguarded outbound fetch/LLM API egress possible."
+          },
+          {
+            "rule_id": "GOV-HDR-002",
+            "control": "CORS Origin Isolation (Access-Control-Allow-Origin)",
+            "status": "FAIL",
+            "detail": "ACAO=*"
+          },
+          {
+            "rule_id": "GOV-HDR-003",
+            "control": "Strict-Transport-Security (TLS Enforcement)",
+            "status": "PASS",
+            "detail": "max-age=63072000"
+          },
+          {
+            "rule_id": "GOV-HDR-004",
+            "control": "Frame & Clickjacking Guardrail (X-Frame-Options / frame-ancestors)",
+            "status": "WARN",
+            "detail": "No explicit X-Frame-Options or CSP frame-ancestors policy."
+          },
+          {
+            "rule_id": "GOV-HDR-005",
+            "control": "Browser Feature & Sensor Lockdown (Permissions-Policy)",
+            "status": "WARN",
+            "detail": "Missing Permissions-Policy (microphone/camera/geolocation not explicitly restricted)."
+          },
+          {
+            "rule_id": "GOV-DOM-006",
+            "control": "Subresource Integrity (SRI) on External Scripts",
+            "status": "WARN",
+            "detail": "2 external script(s) loaded without SHA-256/384 SRI integrity attribute."
+          },
+          {
+            "rule_id": "GOV-PROMPT-007",
+            "control": "Input / Prompt Surface Token-Length & Boundary Controls",
+            "status": "PASS",
+            "detail": "0 user input surface(s) lack explicit DOM maxlength boundary controls."
+          },
+          {
+            "rule_id": "GOV-AI-008",
+            "control": "Shadow AI & Unsanctioned Client-Side Telemetry SDK Detection",
+            "status": "WARN",
+            "detail": "Detected 1 third-party AI/telemetry SDK signature(s) in client bundle."
+          }
+        ]
+      }
+    }
+  ]
+}
