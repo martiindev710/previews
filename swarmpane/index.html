@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwarmPane v1.3.11 - Interactive Browser Sandbox & High-Conversion Pricing Architecture</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-neutral-950 text-neutral-100 min-h-screen antialiased selection:bg-amber-500 selection:text-neutral-950">
+
+  <!-- Top Live Prototype Banner -->
+  <div class="bg-amber-950/50 border-b border-amber-500/20 text-xs">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+          BUILT FOR BORHEN SAIDI (@BORRHENSAIDI) & SWARMPANE.COM
+        </span>
+        <span class="text-neutral-300 hidden md:inline">Replacing the $1 Trial Friction with an In-Browser 4-Pane Race Sandbox + Direct Pro Checkout</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <button onclick="toggleModal('auditModal')" class="text-amber-300 hover:text-white font-semibold underline underline-offset-4">
+          Read Full Conversion Teardown & $150 Implementation Plan ->
+        </button>
+        <a href="mailto:support@swarmpane.com" class="text-neutral-400 hover:text-white hidden sm:inline">support@swarmpane.com</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Matching SwarmPane Navigation -->
+  <header class="border-b border-neutral-800/80 bg-neutral-950/90 backdrop-blur sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-neutral-950 flex items-center justify-center font-black text-lg shadow-lg shadow-amber-500/20">
+          SP
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white">SwarmPane</h1>
+            <span class="text-[11px] mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">v1.3.11 LIVE (Mac / Win / Linux)</span>
+          </div>
+          <p class="text-xs text-neutral-400">Up to 16 coding CLIs side by side in one window. Race them, verify with tests, and undo any step.</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <a href="#sandbox" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-800">Interactive 4-Pane Race</a>
+        <a href="#pricing-redesign" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-800">No-$1-Trial Pricing Architecture</a>
+        <button onclick="toggleModal('auditModal')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-neutral-950 transition">
+          Why Remove the $1 Trial?
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 space-y-10">
+    <!-- Hero + Interactive 4-Pane CLI Race Simulator -->
+    <section id="sandbox" class="space-y-5">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Zero-Install Hero Experience (Replaces the $1 Trial Gate)</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Let Developers Feel "CLI Race + 1-Click Undo" Right on the Landing Page</h2>
+          <p class="text-sm text-neutral-400 mt-1 max-w-3xl">
+            When you remove the $1 trial, visitors need immediate visceral proof before paying $17/mo. This interactive 4-pane simulator lets developers pick a real task, race 4 local CLIs in isolated git worktrees, inspect test/typecheck/lint rankings, and test 1-click Undo right in their browser.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <select id="taskSelector" onchange="resetRace()" class="px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-neutral-100 font-medium">
+            <option value="ws">Task 1: Fix WebSocket reconnect race condition + add unit test</option>
+            <option value="billing">Task 2: Refactor Stripe webhook idempotency & Prisma tx</option>
+            <option value="browser">Task 3: v1.3.11 Live Browser Docs Lookup + OAuth PKCE patch</option>
+          </select>
+          <button onclick="runCliRace()" id="raceBtn" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold text-xs shadow-lg shadow-amber-500/20 transition">
+            Run 4-Pane CLI Race
+          </button>
+          <button onclick="undoLastStep()" class="px-3.5 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 font-semibold text-xs transition">
+            Undo Step Checkpoint
+          </button>
+        </div>
+      </div>
+
+      <!-- Simulated SwarmPane Multi-Pane Window -->
+      <div class="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-2xl">
+        <!-- Window Title Bar -->
+        <div class="px-4 py-2.5 bg-neutral-950 border-b border-neutral-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+            <span class="ml-2 mono text-neutral-300 font-semibold">SwarmPane v1.3.11 - 4 Active Worktrees (Web Browsing Enabled)</span>
+          </div>
+          <div class="flex items-center gap-3 mono text-[11px]">
+            <span class="text-emerald-400" id="checkpointStatusLabel">Checkpoint #04 Saved (Pre-Edit Snapshot)</span>
+            <span class="px-2 py-0.5 rounded bg-neutral-800 text-neutral-300" id="raceTimerLabel">Elapsed: 3.4s</span>
+          </div>
+        </div>
+
+        <!-- 4-Pane Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-neutral-800" id="panesContainer">
+          <!-- Populated dynamically by JS -->
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="px-4 py-3 bg-neutral-950 border-t border-neutral-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2 text-neutral-300">
+            <span class="font-bold text-amber-400">Winner Ranked by Tests, Typecheck & Lint:</span>
+            <span id="winnerSummaryText" class="mono text-emerald-400">Pane #1 (Claude Code CLI) - 14/14 tests passed, 0 lint warnings</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="pointAndFixDemo()" class="px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-semibold">
+              Simulate "Point and Fix"
+            </button>
+            <button onclick="mergeWinnerDemo()" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold">
+              Merge Winning Worktree Diff
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="actionFeedbackBanner" class="hidden p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-xs text-emerald-200 mono"></div>
+    </section>
+
+    <!-- Honest Conversion Analysis & Pricing Redesign Section -->
+    <section id="pricing-redesign" class="p-6 sm:p-8 rounded-2xl bg-neutral-900/90 border border-neutral-800 space-y-6">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-neutral-800 pb-5">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Direct Answer to Your Post Today</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white mt-1">Why Removing the $1 Trial Increases Paid Conversions (And What to Replace It With)</h2>
+          <p class="text-sm text-neutral-400 mt-1 max-w-3xl">
+            A $1 trial forces developers to pull out a credit card before they have launched the app once, while also anchoring the product as a $1 experiment. Below is the higher-converting pricing architecture used by top developer tools.
+          </p>
+        </div>
+
+        <!-- Billing Toggle -->
+        <div class="flex items-center gap-2 bg-neutral-950 p-1.5 rounded-xl border border-neutral-800 shrink-0">
+          <button onclick="setBilling('monthly')" id="bill-monthly" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-neutral-950">Monthly Billing</button>
+          <button onclick="setBilling('annual')" id="bill-annual" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-300 hover:text-white">Annual (Save 20%)</button>
+        </div>
+      </div>
+
+      <!-- Interactive ROI Calculator -->
+      <div class="p-4 rounded-xl bg-neutral-950 border border-neutral-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="space-y-1 flex-1 w-full">
+          <div class="flex justify-between text-xs">
+            <span class="font-semibold text-neutral-300">Developer Hours Saved Per Week Racing CLIs in Parallel: <strong id="hoursSavedVal" class="text-amber-400 mono">6 hrs/wk</strong></span>
+            <span class="text-neutral-400">At $75/hr engineering rate</span>
+          </div>
+          <input type="range" min="2" max="15" value="6" oninput="updateRoi(this.value)" class="w-full accent-amber-500 cursor-pointer" />
+        </div>
+        <div class="px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-right shrink-0">
+          <div class="text-[11px] text-neutral-400">Monthly Engineering Time Saved</div>
+          <div class="text-lg font-extrabold text-emerald-400 mono" id="roiDollarVal">$1,800 / mo value for $17</div>
+        </div>
+      </div>
+
+      <!-- 3-Tier Redesigned Pricing Cards (No $1 Trial Gate) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Tier 1: Local Sandbox (No Card Required) -->
+        <div class="p-6 rounded-2xl bg-neutral-950 border border-neutral-800 flex flex-col justify-between space-y-5">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">Local Explorer</h3>
+              <span class="text-[11px] mono px-2 py-0.5 rounded bg-neutral-800 text-neutral-300">No Credit Card</span>
+            </div>
+            <div class="text-3xl font-extrabold text-white">$0 <span class="text-xs font-normal text-neutral-400">/ local evaluation</span></div>
+            <p class="text-xs text-neutral-400">Replaces the $1 credit-card barrier so developers install the binary and verify their local CLIs immediately.</p>
+            <ul class="space-y-2 text-xs text-neutral-300 pt-2">
+              <li>+ Detect local Claude Code, Codex, Gemini CLI & Aider</li>
+              <li>+ Up to 2 side-by-side panes per workspace</li>
+              <li>+ 5 Undo file checkpoints per session</li>
+              <li>+ Native Mac, Windows & Linux builds</li>
+            </ul>
+          </div>
+          <button onclick="selectPlanToast('Local Explorer')" class="w-full py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-semibold text-xs transition">
+            Download Free Binary (Mac / Win / Linux)
+          </button>
+        </div>
+
+        <!-- Tier 2: SwarmPane Pro (Core Conversion Driver) -->
+        <div class="p-6 rounded-2xl bg-neutral-950 border-2 border-amber-500/80 flex flex-col justify-between space-y-5 relative shadow-xl shadow-amber-500/10">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">SwarmPane Pro</h3>
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-neutral-950">MOST POPULAR</span>
+            </div>
+            <div class="text-3xl font-extrabold text-white" id="proPriceDisplay">$17 <span class="text-xs font-normal text-neutral-400">/ month</span></div>
+            <p class="text-xs text-neutral-300" id="proSubtext">Direct checkout backed by a 14-day 1-click full refund guarantee (zero $1 rebill friction).</p>
+            <ul class="space-y-2 text-xs text-neutral-200 pt-2">
+              <li>+ <strong>Up to 16 coding CLIs at once</strong> in one window</li>
+              <li>+ <strong>Unlimited CLI Races</strong> ranked by tests, typecheck & lint</li>
+              <li>+ <strong>Full Web Browsing (v1.3.11)</strong> with zero API keys</li>
+              <li>+ <strong>Unlimited 1-Click Undo Checkpoints</strong> & Point-and-Fix</li>
+            </ul>
+          </div>
+          <button onclick="selectPlanToast('SwarmPane Pro')" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-extrabold text-xs transition">
+            Get SwarmPane Pro Instant License
+          </button>
+        </div>
+
+        <!-- Tier 3: Team / Founder Lifetime Pass -->
+        <div class="p-6 rounded-2xl bg-neutral-950 border border-neutral-800 flex flex-col justify-between space-y-5">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">Team & Multi-Machine</h3>
+              <span class="text-[11px] mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">High LTV Tier</span>
+            </div>
+            <div class="text-3xl font-extrabold text-white" id="teamPriceDisplay">$49 <span class="text-xs font-normal text-neutral-400">/ month (up to 5 seats)</span></div>
+            <p class="text-xs text-neutral-400">Captures startup engineering teams who want shared test-ranking profiles and multi-device activation.</p>
+            <ul class="space-y-2 text-xs text-neutral-300 pt-2">
+              <li>+ 5 seats + 3 machines per engineer</li>
+              <li>+ Shared `.swarmpane.json` test/lint race definitions</li>
+              <li>+ Priority feature channel & direct support</li>
+              <li>+ Invoice & company receipt automation</li>
+            </ul>
+          </div>
+          <button onclick="selectPlanToast('Team & Multi-Machine')" class="w-full py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-semibold text-xs transition">
+            Upgrade Engineering Team
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Conversion Teardown & Proposal Modal -->
+  <div id="auditModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-neutral-900 border border-neutral-700 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">SwarmPane Landing Page & Pricing Upgrade</span>
+          <h3 class="text-lg font-bold text-white">3 Reasons to Drop the $1 Trial (And Ship This Sandbox)</h3>
+        </div>
+        <button onclick="toggleModal('auditModal')" class="text-neutral-400 hover:text-white text-sm font-bold px-2 py-1">X</button>
+      </div>
+      <div class="space-y-3 text-xs sm:text-sm text-neutral-300">
+        <p>
+          1. <strong>Credit card friction kills impulse testing:</strong> Paying $1 requires the exact same Stripe checkout friction as paying $17, plus developers hesitate over automatic 7-day rebills.
+        </p>
+        <p>
+          2. <strong>Interactive browser proof converts cold X traffic:</strong> Letting visitors click "Run 4-Pane Race" and "Undo Step" right on <code>swarmpane.com</code> proves the workflow in 5 seconds before they even download the DMG/installer.
+        </p>
+        <div class="p-4 rounded-xl bg-neutral-950 border border-neutral-800 space-y-2 text-xs">
+          <div class="font-bold text-amber-400">Milestone 1 ($150 - Delivered Within 24 Hours):</div>
+          <p class="text-neutral-300">
+            Production drop-in component for <code>swarmpane.com</code> containing this interactive 4-Pane CLI Race + Undo simulator, updated v1.3.11 Web Browsing showcase, and the no-$1-trial pricing & ROI calculator section.
+          </p>
+          <div class="font-bold text-white pt-1">Full Landing Page + Docs/Changelog Polish ($350):</div>
+          <p class="text-neutral-300">
+            Complete conversion optimization pass, interactive OS download detector (Mac Apple Silicon / Intel, Windows, Linux), and automated Stripe license/pricing toggle integration.
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <a href="mailto:martiin.dev.710@gmail.com?subject=SwarmPane%20Interactive%20Sandbox%20%26%20Pricing" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs">
+          Email Martin (martiin.dev.710@gmail.com)
+        </a>
+        <button onclick="toggleModal('auditModal')" class="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const raceScenarios = {
+      ws: {
+        winner: 'Pane #1 (Claude Code CLI) - 14/14 tests passed, 0 lint warnings, 3.1s',
+        panes: [
+          {
+            cli: 'Claude Code CLI',
+            worktree: 'wt-claude-ws-fix',
+            badge: 'RANK #1 WINNER',
+            badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+            tests: '14/14 PASS',
+            typecheck: '0 errors',
+            lint: '0 warnings',
+            diff: `+ const backoffMs = Math.min(1000 * 2 ** attempt, 15000);\n+ if (socket.readyState === WebSocket.OPEN) return;\n+ await lock.acquire('ws-reconnect', () => connect());`
+          },
+          {
+            cli: 'Codex CLI',
+            worktree: 'wt-codex-ws-fix',
+            badge: 'RANK #2',
+            badgeClass: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+            tests: '14/14 PASS',
+            typecheck: '0 errors',
+            lint: '1 warning',
+            diff: `+ let reconnecting = false;\n+ function scheduleReconnect() {\n+   if (reconnecting) return;\n+   reconnecting = true;\n+ }`
+          },
+          {
+            cli: 'Gemini CLI (Web Browse ON)',
+            worktree: 'wt-gemini-ws-fix',
+            badge: 'RANK #3',
+            badgeClass: 'bg-neutral-800 text-neutral-300 border-neutral-700',
+            tests: '13/14 PASS',
+            typecheck: '0 errors',
+            lint: '0 warnings',
+            diff: `+ // Fetched RFC 6455 close code docs via v1.3.11 browser\n+ if (event.code !== 1000) retryQueue.push(Date.now());`
+          },
+          {
+            cli: 'Cursor Agent / Aider',
+            worktree: 'wt-aider-ws-fix',
+            badge: 'HALTED (Guardrail)',
+            badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+            tests: '11/14 FAIL',
+            typecheck: '1 error',
+            lint: '2 warnings',
+            diff: `! Attempted to modify test assertion in ws.spec.ts\n! SwarmPane blocked test tampering & saved checkpoint`
+          }
+        ]
+      },
+      billing: {
+        winner: 'Pane #2 (Codex CLI) - 22/22 tests passed, serializable Prisma tx, 2.8s',
+        panes: [
+          {
+            cli: 'Claude Code CLI',
+            worktree: 'wt-claude-stripe',
+            badge: 'RANK #2',
+            badgeClass: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+            tests: '22/22 PASS',
+            typecheck: '0 errors',
+            lint: '1 warning',
+            diff: `+ const existing = await db.webhookEvent.findUnique({ where: { id: evt.id } });\n+ if (existing) return res.status(200).json({ deduped: true });`
+          },
+          {
+            cli: 'Codex CLI',
+            worktree: 'wt-codex-stripe',
+            badge: 'RANK #1 WINNER',
+            badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+            tests: '22/22 PASS',
+            typecheck: '0 errors',
+            lint: '0 warnings',
+            diff: `+ await prisma.$transaction(async (tx) => {\n+   await tx.webhookLog.create({ data: { eventId: evt.id } });\n+   await tx.subscription.upsert({ where: { orgId }, update: { plan: 'PRO' } });\n+ });`
+          },
+          {
+            cli: 'Gemini CLI (Web Browse ON)',
+            worktree: 'wt-gemini-stripe',
+            badge: 'RANK #3',
+            badgeClass: 'bg-neutral-800 text-neutral-300 border-neutral-700',
+            tests: '21/22 PASS',
+            typecheck: '0 errors',
+            lint: '0 warnings',
+            diff: `+ // Verified Stripe API 2026-10-01 webhook signature tolerances\n+ stripe.webhooks.constructEvent(rawBody, sig, secret, 300);`
+          },
+          {
+            cli: 'OpenCode / Kimi CLI',
+            worktree: 'wt-kimi-stripe',
+            badge: 'RANK #4',
+            badgeClass: 'bg-neutral-800 text-neutral-400 border-neutral-700',
+            tests: '19/22 PASS',
+            typecheck: '0 errors',
+            lint: '2 warnings',
+            diff: `+ await updateSubscription(evt.data.object);\n- // Missing unique constraint catch on concurrent retries`
+          }
+        ]
+      },
+      browser: {
+        winner: 'Pane #3 (Gemini CLI + SwarmPane v1.3.11 Browser) - 18/18 tests passed',
+        panes: [
+          {
+            cli: 'Claude Code CLI',
+            worktree: 'wt-claude-pkce',
+            badge: 'RANK #2',
+            badgeClass: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+            tests: '18/18 PASS',
+            typecheck: '0 errors',
+            lint: '0 warnings',
+            diff: `+ const challenge = base64UrlEncode(await sha256(verifier));\n+ authUrl.searchParams.set('code_challenge_method', 'S256');`
+          },
+          {
+            cli: 'Codex CLI',
+            worktree: 'wt-codex-pkce',
+            badge: 'RANK #3',
+            badgeClass: 'bg-neutral-800 text-neutral-300 border-neutral-700',
+            tests: '17/18 PASS',
+            typecheck: '0 errors',
+            lint: '0 warnings',
+            diff: `+ export function verifyPkceState(req: Request) {\n+   return timingSafeEqual(Buffer.from(a), Buffer.from(b));\n+ }`
+          },
+          {
+            cli: 'Gemini CLI (v1.3.11 Browser)',
+            worktree: 'wt-gemini-pkce',
+            badge: 'RANK #1 WINNER',
+            badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+            tests: '18/18 PASS',
+            typecheck: '0 errors',
+            lint: '0 warnings',
+            diff: `+ // Browsed live OAuth provider changelog via SwarmPane v1.3.11\n+ authUrl.searchParams.set('prompt', 'consent');\n+ await tokenStore.saveEncrypted(session.tokens);`
+          },
+          {
+            cli: 'Aider CLI',
+            worktree: 'wt-aider-pkce',
+            badge: 'RANK #4',
+            badgeClass: 'bg-neutral-800 text-neutral-400 border-neutral-700',
+            tests: '16/18 PASS',
+            typecheck: '0 errors',
+            lint: '1 warning',
+            diff: `+ const verifier = crypto.randomBytes(32).toString('hex');`
+          }
+        ]
+      }
+    };
+
+    function renderPanes() {
+      const key = document.getElementById('taskSelector').value;
+      const sc = raceScenarios[key];
+      const container = document.getElementById('panesContainer');
+      container.innerHTML = sc.panes.map((p, idx) => `
+        <div class="p-4 bg-neutral-950 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-white">Pane #${idx + 1}: ${p.cli}</span>
+              <span class="text-[11px] mono text-neutral-500">(${p.worktree})</span>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${p.badgeClass}">${p.badge}</span>
+          </div>
+          <div class="flex items-center gap-3 text-[11px] mono">
+            <span class="text-emerald-400">Tests: ${p.tests}</span>
+            <span class="text-cyan-400">TS: ${p.typecheck}</span>
+            <span class="text-amber-300">Lint: ${p.lint}</span>
+          </div>
+          <pre class="p-3 rounded-lg bg-neutral-900 border border-neutral-800 text-[11px] mono text-neutral-200 overflow-x-auto leading-relaxed">${p.diff}</pre>
+        </div>
+      `).join('');
+      document.getElementById('winnerSummaryText').textContent = sc.winner;
+    }
+
+    function runCliRace() {
+      const btn = document.getElementById('raceBtn');
+      btn.textContent = 'Racing 4 CLIs...';
+      document.getElementById('raceTimerLabel').textContent = 'Running tests & tsc...';
+      setTimeout(() => {
+        renderPanes();
+        btn.textContent = 'Run 4-Pane CLI Race';
+        document.getElementById('raceTimerLabel').textContent = 'Completed in 2.9s';
+        showFeedback('All 4 isolated git worktrees evaluated. Winning diff ranked automatically by your test suite.');
+      }, 350);
+    }
+
+    function resetRace() {
+      renderPanes();
+    }
+
+    function undoLastStep() {
+      document.getElementById('checkpointStatusLabel').textContent = 'Rewound to Checkpoint #03 (0 dirty files)';
+      showFeedback('Undo for CLIs: Restored exact file snapshot before Pane #4 touched ws.spec.ts in 8ms.');
+    }
+
+    function pointAndFixDemo() {
+      showFeedback('Point and Fix triggered: Captured UI element selector + stack trace and dispatched to Pane #1.');
+    }
+
+    function mergeWinnerDemo() {
+      showFeedback('Merged winning worktree diff into main branch cleanly. 3 losing worktrees discarded.');
+    }
+
+    function showFeedback(msg) {
+      const el = document.getElementById('actionFeedbackBanner');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function setBilling(mode) {
+      const mBtn = document.getElementById('bill-monthly');
+      const aBtn = document.getElementById('bill-annual');
+      if (mode === 'annual') {
+        aBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-neutral-950';
+        mBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-300 hover:text-white';
+        document.getElementById('proPriceDisplay').innerHTML = '$14 <span class="text-xs font-normal text-neutral-400">/ month ($168 billed yearly)</span>';
+        document.getElementById('teamPriceDisplay').innerHTML = '$39 <span class="text-xs font-normal text-neutral-400">/ month (up to 5 seats)</span>';
+      } else {
+        mBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-neutral-950';
+        aBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-300 hover:text-white';
+        document.getElementById('proPriceDisplay').innerHTML = '$17 <span class="text-xs font-normal text-neutral-400">/ month</span>';
+        document.getElementById('teamPriceDisplay').innerHTML = '$49 <span class="text-xs font-normal text-neutral-400">/ month (up to 5 seats)</span>';
+      }
+    }
+
+    function updateRoi(hours) {
+      const h = parseInt(hours, 10);
+      document.getElementById('hoursSavedVal').textContent = h + ' hrs/wk';
+      const monthlySavings = h * 4 * 75;
+      document.getElementById('roiDollarVal').textContent = '$' + monthlySavings.toLocaleString() + ' / mo value for $17';
+    }
+
+    function selectPlanToast(plan) {
+      showFeedback('Selected ' + plan + ' - zero $1 trial friction, instant license provisioning.');
+    }
+
+    function toggleModal(id) {
+      document.getElementById(id).classList.toggle('hidden');
+    }
+
+    renderPanes();
+  </script>
+</body>
+</html>

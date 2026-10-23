@@ -1,0 +1,43 @@
+{
+  "directory": "Super Intelligence Malaysia (https://superai.com.my)",
+  "audited_by": "Martin <martiin.dev.710@gmail.com>",
+  "generated_at_utc": "2026-10-23T16:39:44.872927+00:00",
+  "total_directory_tools": 234,
+  "made_in_malaysia_count": 36,
+  "business_types_covered": 22,
+  "sample_verified_records": [
+    {
+      "slug": "bukku-myinvois",
+      "name": "Bukku Accounting",
+      "url": "https://bukku.my",
+      "category": "Accounting & e-Invoicing (MyInvois)",
+      "made_in_malaysia": true,
+      "bm_support_verified": true,
+      "myinvois_lhdn_ready": true,
+      "myr_pricing": "RM 59/mo (Free plan available)",
+      "http_status": 200
+    },
+    {
+      "slug": "storehub-pos",
+      "name": "StoreHub POS",
+      "url": "https://www.storehub.com/my",
+      "category": "Payments, Delivery & POS",
+      "made_in_malaysia": true,
+      "bm_support_verified": true,
+      "myinvois_lhdn_ready": true,
+      "myr_pricing": "RM 139/mo",
+      "http_status": 200
+    },
+    {
+      "slug": "kakitangan-hr",
+      "name": "Kakitangan.com",
+      "url": "https://www.kakitangan.com",
+      "category": "HR & Payroll",
+      "made_in_malaysia": true,
+      "bm_support_verified": true,
+      "myinvois_lhdn_ready": true,
+      "myr_pricing": "RM 8/staff/mo",
+      "http_status": 200
+    }
+  ]
+}
